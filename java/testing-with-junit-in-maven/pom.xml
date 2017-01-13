@@ -6,7 +6,7 @@
 
 
     <groupId>com.ximedes.meetup.tdd</groupId>
-    <artifactId>testing-java-with-junit-in-maven</artifactId>
+    <artifactId>testing-with-junit-in-maven</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
     <packaging>jar</packaging>
