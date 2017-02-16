@@ -10,7 +10,7 @@ class GameOfLife {
     }
 
     isAlive (coords) {
-        return this.grid[coords]
+        return Boolean(this.grid[coords])
     }
     
     nextFrame () {
@@ -43,25 +43,29 @@ class GameOfLife {
 
     getAmountAliveNeighbours (coords) {
 
-        let aliveNeighbours = 0
+        let amount = 0
 
-        for (let [x, y] of this.getNeighbourCoords(coords)) {
-            if (this.isAlive([x, y])) {
-                aliveNeighbours++
-            }
+        for (let neighbourCoords of this.getNeighbourCoords(coords)) {
+            amount += +this.isAlive(neighbourCoords)
         }
 
-        return aliveNeighbours
+        return amount
 
     }
 
     *getNeighbourCoords (coords) {
+        for (let [xOffset, yOffset] of this.getAllOffsets()) {
+            yield [
+                coords[0] + xOffset,
+                coords[1] + yOffset
+            ]
+        }
+    }
+
+    *getAllOffsets () {
         for (let xOffset of this.offsets) {
             for (let yOffset of this.offsets) {
-                yield [
-                    coords[0] + xOffset,
-                    coords[1] + yOffset
-                ]
+                yield [xOffset, yOffset]
             }
         }
     }
