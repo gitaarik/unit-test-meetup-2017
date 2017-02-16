@@ -54,7 +54,7 @@ class GameOfLife {
     }
 
     *getNeighbourCoords (coords) {
-        for (let [xOffset, yOffset] of this.getAllOffsets()) {
+        for (let [xOffset, yOffset] of this.getNeighbourOffsets()) {
             yield [
                 coords[0] + xOffset,
                 coords[1] + yOffset
@@ -62,7 +62,7 @@ class GameOfLife {
         }
     }
 
-    *getAllOffsets () {
+    *getNeighbourOffsets () {
         for (let xOffset of this.offsets) {
             for (let yOffset of this.offsets) {
                 yield [xOffset, yOffset]
