@@ -36,9 +36,13 @@ class GameOfLife {
     }
 
     getNextState (coords) {
-        if (this.getAmountAliveNeighbours(coords) > 2) {
+
+        const aliveNeighbours = this.getAmountAliveNeighbours(coords)
+
+        if (aliveNeighbours > 1 && aliveNeighbours < 4) {
             return true
         }
+
     }
 
     getAmountAliveNeighbours (coords) {
@@ -65,6 +69,7 @@ class GameOfLife {
     *getNeighbourOffsets () {
         for (let xOffset of this.offsets) {
             for (let yOffset of this.offsets) {
+                if (xOffset == 0 && yOffset == 0) continue
                 yield [xOffset, yOffset]
             }
         }
