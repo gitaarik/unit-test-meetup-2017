@@ -1,4 +1,4 @@
-describe("Grid", function () {
+describe("Grid lines", function () {
 
     var grid
 
@@ -47,7 +47,7 @@ describe("Grid", function () {
 
 });
 
-describe("Grid with starting positions", function () {
+describe("Grid lines with starting positions", function () {
 
     var grid
 
@@ -88,6 +88,46 @@ describe("Grid with starting positions", function () {
             [[3, 44], [73, 44]],
             [[3, 54], [73, 54]]
         ])
+    })
+
+})
+
+describe("Grid cells", function () {
+
+    var grid
+
+    beforeEach(function () {
+        grid = new Grid({
+            cellSize: 10,
+            xAmount: 7,
+            yAmount: 5
+        })
+    })
+
+    it("can get coords for a cell", function () {
+        const cellCoords = grid.getCellRect(4, 2)
+        expect(cellCoords).toEqual([40, 20, 10, 10])
+    })
+
+})
+
+describe("Grid cells with starting positions", function () {
+
+    var grid
+
+    beforeEach(function () {
+        grid = new Grid({
+            cellSize: 10,
+            xAmount: 7,
+            yAmount: 5,
+            xStart: 3,
+            yStart: 4
+        })
+    })
+
+    it("can get coords for a cell", function () {
+        const cellCoords = grid.getCellRect(4, 2)
+        expect(cellCoords).toEqual([43, 24, 10, 10])
     })
 
 })

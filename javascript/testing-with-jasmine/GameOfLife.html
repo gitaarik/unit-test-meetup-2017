@@ -2,49 +2,25 @@
 <html>
 
     <head>
-
         <meta charset="utf-8">
         <title>Game Of Life</title>
-        <script src="src/GameOfLife.js"></script>
-        <script src="src/Grid.js"></script>
-
+        <style>
+            canvas {
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+        </style>
     </head>
 
     <body>
 
-        <canvas id="game-of-life"></canvas>
+        <canvas id="grid"></canvas>
+        <canvas id="cells"></canvas>
 
-        <script>
-
-            const gameEl = document.getElementById('game-of-life')
-            const ctx = gameEl.getContext('2d')
-
-            const grid = new Grid({
-                cellSize: 25,
-                xAmount: 76,
-                yAmount: 22,
-                xStart: 1,
-                yStart: 1
-            })
-
-            gameEl.width = grid.getWidth() + 1
-            gameEl.height = grid.getHeight() + 1
-
-            for (let coords of grid.getLinesX()) {
-                ctx.beginPath()
-                ctx.moveTo(coords[0][0], coords[0][1])
-                ctx.lineTo(coords[1][0], coords[1][1])
-                ctx.stroke()
-            }
-
-            for (let coords of grid.getLinesY()) {
-                ctx.beginPath()
-                ctx.moveTo(coords[0][0], coords[0][1])
-                ctx.lineTo(coords[1][0], coords[1][1])
-                ctx.stroke()
-            }
-
-        </script>
+        <script src="src/GameOfLife.js"></script>
+        <script src="src/Grid.js"></script>
+        <script src="src/Game.js"></script>
 
     </body>
 

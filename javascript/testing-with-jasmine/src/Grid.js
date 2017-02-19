@@ -19,9 +19,9 @@ class Grid {
     getLinesX () {
 
         const coords = []
-        const yEnd = this.getYEnd()
+        const yEnd = this.getLinesYEnd()
 
-        for (let offset of this.getXOffsets()) {
+        for (let offset of this.getLinesXOffsets()) {
             coords.push([
                 [offset, this.yStart],
                 [offset, yEnd]
@@ -32,20 +32,20 @@ class Grid {
 
     }
 
-    getYEnd () {
+    getLinesYEnd () {
         return this.yStart + this.xAmount * this.cellSize
     }
 
-    getXOffsets () {
-        return this.getOffsets(this.xAmount, this.xStart)
+    getLinesXOffsets () {
+        return this.getLinesOffsets(this.xAmount, this.xStart)
     }
 
     getLinesY () {
 
         const coords = []
-        const xEnd = this.getXEnd()
+        const xEnd = this.getLinesXEnd()
 
-        for (let offset of this.getYOffsets()) {
+        for (let offset of this.getLinesYOffsets()) {
             coords.push([
                 [this.xStart, offset],
                 [xEnd, offset]
@@ -56,18 +56,30 @@ class Grid {
 
     }
 
-    getXEnd () {
+    getLinesXEnd () {
         return this.xStart + this.xAmount * this.cellSize
     }
 
-    getYOffsets () {
-        return this.getOffsets(this.yAmount, this.yStart)
+    getLinesYOffsets () {
+        return this.getLinesOffsets(this.yAmount, this.yStart)
     }
 
-    *getOffsets (amount, initialOffset) {
+    *getLinesOffsets (amount, initialOffset) {
         for (let lineNo = 0; lineNo < amount + 1; lineNo++) {
             yield initialOffset + lineNo * this.cellSize
         }
+    }
+
+    getCellRect (xPos, yPos) {
+
+        const x = this.xStart + xPos * this.cellSize
+        const y = this.yStart + yPos * this.cellSize
+
+        return [
+            x, y,
+            this.cellSize, this.cellSize
+        ]
+
     }
 
 }
