@@ -17,12 +17,21 @@ class GameOfLife {
 
         let newGrid = {}
 
-        for (let coords of this.getAliveCoords()) {
+        for (let coords of this.getCoordsToRerender()) {
             newGrid[coords] = this.getNextState(coords)
         }
 
         this.grid = newGrid
 
+    }
+
+    *getCoordsToRerender () {
+        for (let aliveCoords of this.getAliveCoords()) {
+            yield aliveCoords
+            for (let deadNeighbourCoords of this.getDeadNeighbourCoords(aliveCoords)) {
+                yield deadNeighbourCoords
+            }
+        }
     }
 
     *getAliveCoords () {
@@ -43,6 +52,10 @@ class GameOfLife {
             return true
         }
 
+        if (aliveNeighbours == 3) {
+            return true
+        }
+
     }
 
     getAmountAliveNeighbours (coords) {
@@ -55,6 +68,12 @@ class GameOfLife {
 
         return amount
 
+    }
+
+    *getDeadNeighbourCoords (coords) {
+        for (let neighbourCoords of this.getNeighbourCoords(coords)) {
+            if (!this.isAlive(neighbourCoords)) yield neighbourCoords
+        }
     }
 
     *getNeighbourCoords (coords) {
