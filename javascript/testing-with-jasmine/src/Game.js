@@ -2,54 +2,87 @@ class Game {
 
     constructor () {
 
-        this.gridEl = document.getElementById('grid')
-        this.cellsEl = document.getElementById('cells')
-        this.gridCtx = this.gridEl.getContext('2d')
-        this.cellsCtx = this.cellsEl.getContext('2d')
+        this.gridTable = document.getElementById('grid')
+        this.cellAmountX = 56
+        this.cellAmountY = 13
+        this.game = new GameOfLife()
 
-        this.initialize()
+        this.createCells()
 
-    }
-
-    initialize () {
-        this.createGrid()
-        this.gridEl.width = this.grid.getWidth() + 1
-        this.gridEl.height = this.grid.getHeight() + 1
-        this.drawGridLines()
-        this.drawCells()
+        this.initNextFrameButton()
 
     }
 
-    createGrid () {
-        this.grid = new Grid({
-            cellSize: 25,
-            xAmount: 76,
-            yAmount: 22,
-            xStart: 1,
-            yStart: 1
-        })
-    }
+    createCells () {
 
-    drawGridLines () {
+        for (let y = 0; y < this.cellAmountY; y++) {
 
-        for (let coords of this.grid.getLinesX()) {
-            this.gridCtx.beginPath()
-            this.gridCtx.moveTo(coords[0][0], coords[0][1])
-            this.gridCtx.lineTo(coords[1][0], coords[1][1])
-            this.gridCtx.stroke()
-        }
+            const row = document.createElement('tr')
+            this.gridTable.appendChild(row)
 
-        for (let coords of this.grid.getLinesY()) {
-            this.gridCtx.beginPath()
-            this.gridCtx.moveTo(coords[0][0], coords[0][1])
-            this.gridCtx.lineTo(coords[1][0], coords[1][1])
-            this.gridCtx.stroke()
+            for (let x = 0; x < this.cellAmountX; x++) {
+                this.createCell(row, x, y)
+            }
+
         }
 
     }
 
-    drawCells () {
-        this.cellsCtx.fillRect.apply(this.gridCtx, this.grid.getCellRect(5, 5))
+    createCell (row, x, y) {
+        const cell = document.createElement('td')
+        cell.setAttribute('data-coords', this.serializeCoords([x, y]))
+        cell.addEventListener('click', event => this.cellClicked(event))
+        row.appendChild(cell)
+    }
+
+    serializeCoords (coords) {
+        return 'x' + coords[0] + 'y' + coords[1]
+    }
+
+    deserializeCoords (coordsStr) {
+        return coordsStr.substr(1).split('y')
+    }
+
+    cellClicked (event) {
+        const coords = this.deserializeCoords(event.target.getAttribute('data-coords'))
+        this.game.setAlive(coords)
+        this.redraw()
+    }
+
+    redraw () {
+        for (let y = 0; y < this.cellAmountY; y++) {
+            for (let x = 0; x < this.cellAmountX; x++) {
+                this.setCellState([x, y])
+            }
+        }
+    }
+
+    setCellState (coords) {
+
+        const cell = this.getCell(coords)
+
+        if (this.game.isAlive(coords)) {
+            cell.classList.add('alive')
+        } else {
+            cell.classList.remove('alive')
+        }
+
+    }
+
+    getCell (coords) {
+        return this.gridTable.querySelector(
+            'td[data-coords=' + this.serializeCoords(coords) + ']'
+        )
+    }
+
+    initNextFrameButton () {
+        const button = document.getElementById('next-frame')
+        button.addEventListener('click', event => this.progressFrame())
+    }
+
+    progressFrame () {
+        this.game.nextFrame()
+        this.redraw()
     }
 
 }
