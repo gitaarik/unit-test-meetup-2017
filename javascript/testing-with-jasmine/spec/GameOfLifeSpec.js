@@ -204,3 +204,35 @@ describe("GameOfLife", function () {
     })
 
 });
+
+describe("GameOfLife with boundaries", function () {
+
+    var game
+
+    beforeEach(function () {
+        game = new GameOfLife({
+            minX: 2,
+            minY: 3,
+            maxX: 10,
+            maxY: 8
+        })
+    });
+
+    it("can set min and max coords", function () {
+        expect(game.minX).toEqual(2)
+        expect(game.minY).toEqual(3)
+        expect(game.maxX).toEqual(10)
+        expect(game.maxY).toEqual(8)
+    })
+
+    it("can set a valid coord", function () {
+        game.setAlive([2, 3])
+        expect(game.isAlive([2, 3])).toBeTruthy()
+    })
+
+    it("cannot set an invalid coord", function () {
+        game.setAlive([1, 3])
+        expect(game.isAlive([1, 3])).toBeFalsy()
+    })
+
+})

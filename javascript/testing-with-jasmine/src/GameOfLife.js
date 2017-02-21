@@ -1,12 +1,36 @@
 class GameOfLife {
 
-    constructor () {
+    constructor (props) {
+
         this.grid = {}
         this.offsets = [-1, 0, 1]
+
+        if (props) {
+            this.minX = props.minX
+            this.minY = props.minY
+            this.maxX = props.maxX
+            this.maxY = props.maxY
+        }
+
     }
 
     setAlive (coords) {
-       this.grid[coords] = true
+        if (this.isValidCoords(coords)) {
+            this.grid[coords] = true
+        }
+    }
+
+    isValidCoords (coords) {
+        if (
+            this.minX && coords[0] < this.minX
+            || this.minY && coords[1] < this.minY
+            || this.maxX && coords[0] > this.maxX
+            || this.maxY && coords[1] > this.maxY
+        ) {
+            return false
+        } else {
+            return true
+        }
     }
 
     isAlive (coords) {
