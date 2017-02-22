@@ -229,9 +229,9 @@ describe("GameOfLife", function () {
     it("returns the correct coords for the alive cells", function () {
 
         // neighbours
-        game.setAlive([6, 6])
-        game.setAlive([6, 5])
         game.setAlive([6, 4])
+        game.setAlive([6, 5])
+        game.setAlive([6, 6])
 
         game.nextFrame()
 
@@ -241,7 +241,45 @@ describe("GameOfLife", function () {
             aliveCoords.push(coords)
         }
 
-        expect(aliveCoords).toEqual([[5, 5], [7, 5]])
+        expect(aliveCoords.sort()).toEqual([[5, 5], [6, 5], [7, 5]])
+
+    })
+
+    it("returns the correct coords to rerender", function () {
+
+        game.setAlive([5, 5])
+
+        const coordsToRerender = []
+
+        for (let coords of game.getCoordsToRerender()) {
+            coordsToRerender.push(coords)
+        }
+
+        expect(coordsToRerender.sort()).toEqual([
+            [4, 4], [4, 5], [4, 6],
+            [5, 4], [5, 5], [5, 6],
+            [6, 4], [6, 5], [6, 6]
+        ])
+
+    })
+
+    it("doesn't return the same coords to rerender more than once", function () {
+
+        game.setAlive([5, 5])
+        game.setAlive([6, 5])
+
+        const coordsToRerender = []
+
+        for (let coords of game.getUniqueCoordsToRerender()) {
+            coordsToRerender.push(coords)
+        }
+
+        expect(coordsToRerender.sort()).toEqual([
+            [4, 4], [4, 5], [4, 6],
+            [5, 4], [5, 5], [5, 6],
+            [6, 4], [6, 5], [6, 6],
+            [7, 4], [7, 5], [7, 6]
+        ])
 
     })
 

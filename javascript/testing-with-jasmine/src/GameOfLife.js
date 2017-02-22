@@ -49,11 +49,24 @@ class GameOfLife {
 
         const newGrid = {}
 
-        for (let coords of this.getCoordsToRerender()) {
+        for (let coords of this.getUniqueCoordsToRerender()) {
             newGrid[coords] = this.getNextState(coords)
         }
 
         this.grid = newGrid
+
+    }
+
+    *getUniqueCoordsToRerender () {
+
+        const yielded = []
+
+        for (let coords of this.getCoordsToRerender()) {
+            if (yielded.indexOf(coords.toString()) == -1) {
+                yield coords
+                yielded.push(coords.toString())
+            }
+        }
 
     }
 
