@@ -15,8 +15,16 @@ class GameOfLife {
     }
 
     setAlive (coords) {
+        this.setCellState(coords, true)
+    }
+
+    setDead (coords) {
+        this.setCellState(coords, false)
+    }
+
+    setCellState (coords, state) {
         if (this.isValidCoords(coords)) {
-            this.grid[coords] = true
+            this.grid[coords] = state
         }
     }
 
@@ -39,7 +47,7 @@ class GameOfLife {
     
     nextFrame () {
 
-        let newGrid = {}
+        const newGrid = {}
 
         for (let coords of this.getCoordsToRerender()) {
             newGrid[coords] = this.getNextState(coords)
@@ -60,7 +68,10 @@ class GameOfLife {
 
     *getAliveCoords () {
         for (let coordsStr of Object.keys(this.grid)) {
-            yield this.getCoordsFromStr(coordsStr)
+            const coords = this.getCoordsFromStr(coordsStr)
+            if (this.isAlive(coords)) {
+                yield coords
+            }
         }
     }
 
@@ -69,17 +80,27 @@ class GameOfLife {
     }
 
     getNextState (coords) {
+        if (this.isAlive(coords)) {
+            return this.canLiveOn(coords)
+        } else {
+            return this.comesToLife(coords)
+        }
+    }
+
+    canLiveOn (coords) {
 
         const aliveNeighbours = this.getAmountAliveNeighbours(coords)
 
         if (aliveNeighbours > 1 && aliveNeighbours < 4) {
             return true
+        } else {
+            return false
         }
 
-        if (aliveNeighbours == 3) {
-            return true
-        }
+    }
 
+    comesToLife (coords) {
+        return this.getAmountAliveNeighbours(coords) == 3
     }
 
     getAmountAliveNeighbours (coords) {
@@ -95,8 +116,16 @@ class GameOfLife {
     }
 
     *getDeadNeighbourCoords (coords) {
-        for (let neighbourCoords of this.getNeighbourCoords(coords)) {
+        for (let neighbourCoords of this.getValidNeighbourCoords(coords)) {
             if (!this.isAlive(neighbourCoords)) yield neighbourCoords
+        }
+    }
+
+    *getValidNeighbourCoords (coords) {
+        for (let neighbourCoords of this.getNeighbourCoords(coords)) {
+            if (this.isValidCoords(neighbourCoords)) {
+                yield neighbourCoords
+            }
         }
     }
 

@@ -3,13 +3,19 @@ class Game {
     constructor () {
 
         this.gridTable = document.getElementById('grid')
-        this.cellAmountX = 56
-        this.cellAmountY = 13
-        this.game = new GameOfLife()
+        this.cellAmountX = 70
+        this.cellAmountY = 32
+        this.game = new GameOfLife({
+            minX: 0,
+            minY: 0,
+            maxX: this.cellAmountX,
+            maxY: this.cellAmountY
+        })
 
         this.createCells()
 
-        this.initNextFrameButton()
+        this.initRunButton()
+        this.initStepButton()
 
     }
 
@@ -44,9 +50,17 @@ class Game {
     }
 
     cellClicked (event) {
+
         const coords = this.deserializeCoords(event.target.getAttribute('data-coords'))
-        this.game.setAlive(coords)
+
+        if (this.game.isAlive(coords)) {
+            this.game.setDead(coords)
+        } else {
+            this.game.setAlive(coords)
+        }
+
         this.redraw()
+
     }
 
     redraw () {
@@ -75,14 +89,39 @@ class Game {
         )
     }
 
-    initNextFrameButton () {
-        const button = document.getElementById('next-frame')
-        button.addEventListener('click', event => this.progressFrame())
+    initRunButton () {
+        const button = document.getElementById('run')
+        button.addEventListener('click', () => this.run())
+    }
+
+    initStepButton () {
+        const button = document.getElementById('step')
+        button.addEventListener('click', () => this.step())
     }
 
     progressFrame () {
         this.game.nextFrame()
         this.redraw()
+    }
+
+    step () {
+        this.running = false
+        this.progressFrame()
+    }
+
+    run () {
+
+        this.running = true
+
+        const runLoop = () => {
+            if (this.running) {
+                this.progressFrame()
+                setTimeout(runLoop, 100)
+            }
+        }
+
+        runLoop()
+
     }
 
 }

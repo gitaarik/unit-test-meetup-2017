@@ -11,6 +11,12 @@ describe("GameOfLife", function () {
         expect(game.isAlive([0, 0])).toBeTruthy()
     })
 
+    it("can set a cell dead", function () {
+        game.setAlive([0, 0])
+        game.setDead([0, 0])
+        expect(game.isAlive([0, 0])).toBeFalsy()
+    })
+
     it("dies when it has no neighbours", function () {
         game.setAlive([0, 0])
         game.nextFrame()
@@ -178,6 +184,23 @@ describe("GameOfLife", function () {
 
     })
 
+    it("doesn't come to live when 0,0 has only 2 neighbours", function () {
+
+        // neighbours
+        game.setAlive([0, 1])
+        game.setAlive([1, 0])
+
+        game.nextFrame()
+        expect(game.isAlive([0, 0])).toBeFalsy()
+
+    })
+
+    it("doesn't come to live when 0,0 has only 1 neighbours", function () {
+        game.setAlive([0, 1])
+        game.nextFrame()
+        expect(game.isAlive([0, 0])).toBeFalsy()
+    })
+
     it("comes to live when 5,5 has 3 neighbours", function () {
 
         // neighbours
@@ -203,6 +226,25 @@ describe("GameOfLife", function () {
 
     })
 
+    it("returns the correct coords for the alive cells", function () {
+
+        // neighbours
+        game.setAlive([6, 6])
+        game.setAlive([6, 5])
+        game.setAlive([6, 4])
+
+        game.nextFrame()
+
+        const aliveCoords = []
+
+        for (let coords of game.getAliveCoords()) {
+            aliveCoords.push(coords)
+        }
+
+        expect(aliveCoords).toEqual([[5, 5], [7, 5]])
+
+    })
+
 });
 
 describe("GameOfLife with boundaries", function () {
@@ -225,14 +267,63 @@ describe("GameOfLife with boundaries", function () {
         expect(game.maxY).toEqual(8)
     })
 
-    it("can set a valid coord", function () {
+    it("can set coords inside the set range", function () {
+
         game.setAlive([2, 3])
         expect(game.isAlive([2, 3])).toBeTruthy()
+
+        game.setAlive([3, 4])
+        expect(game.isAlive([3, 4])).toBeTruthy()
+
+        game.setAlive([5, 5])
+        expect(game.isAlive([5, 5])).toBeTruthy()
+
+        game.setAlive([10, 8])
+        expect(game.isAlive([10, 8])).toBeTruthy()
+
     })
 
-    it("cannot set an invalid coord", function () {
+    it("cannot set coords outside of the range", function () {
+
         game.setAlive([1, 3])
         expect(game.isAlive([1, 3])).toBeFalsy()
+
+        game.setAlive([2, 2])
+        expect(game.isAlive([2, 2])).toBeFalsy()
+
+        game.setAlive([11, 2])
+        expect(game.isAlive([11, 2])).toBeFalsy()
+
+        game.setAlive([3, 9])
+        expect(game.isAlive([3, 9])).toBeFalsy()
+
+        game.setAlive([0, 0])
+        expect(game.isAlive([0, 0])).toBeFalsy()
+
+    })
+
+    it("won't make coords outside the range (x-underflow) alive", function () {
+
+        game.setAlive([2, 3])
+        game.setAlive([2, 4])
+        game.setAlive([2, 5])
+
+        game.nextFrame()
+
+        expect(game.isAlive([1, 4])).toBeFalsy()
+
+    })
+
+    it("won't make coords outside the range (y-underflow) alive", function () {
+
+        game.setAlive([2, 3])
+        game.setAlive([3, 3])
+        game.setAlive([4, 3])
+
+        game.nextFrame()
+
+        expect(game.isAlive([3, 2])).toBeFalsy()
+
     })
 
 })
