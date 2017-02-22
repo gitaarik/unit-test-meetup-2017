@@ -11,9 +11,11 @@ class Game {
             maxX: this.cellAmountX,
             maxY: this.cellAmountY
         })
+        this.mouseIsDown = false
 
         this.createCells()
 
+        this.initMouseDown()
         this.initRunButton()
         this.initStepButton()
 
@@ -38,6 +40,7 @@ class Game {
         const cell = document.createElement('td')
         cell.setAttribute('data-coords', this.serializeCoords([x, y]))
         cell.addEventListener('click', event => this.cellClicked(event))
+        cell.addEventListener('mouseover', event => this.cellHovered(event))
         row.appendChild(cell)
     }
 
@@ -51,7 +54,7 @@ class Game {
 
     cellClicked (event) {
 
-        const coords = this.deserializeCoords(event.target.getAttribute('data-coords'))
+        const coords = this.getCellCoords(event.target)
 
         if (this.game.isAlive(coords)) {
             this.game.setDead(coords)
@@ -61,6 +64,20 @@ class Game {
 
         this.redraw()
 
+    }
+
+    cellHovered (event) {
+
+        if (this.mouseIsDown) {
+            const coords = this.getCellCoords(event.target)
+            this.game.setAlive(coords)
+            this.redraw()
+        }
+
+    }
+
+    getCellCoords (element) {
+        return this.deserializeCoords(element.getAttribute('data-coords'))
     }
 
     redraw () {
@@ -87,6 +104,18 @@ class Game {
         return this.gridTable.querySelector(
             'td[data-coords=' + this.serializeCoords(coords) + ']'
         )
+    }
+
+    initMouseDown () {
+
+        document.addEventListener('mousedown', () => {
+            this.mouseIsDown = true
+        })
+
+        document.addEventListener('mouseup', () => {
+            this.mouseIsDown = false
+        })
+
     }
 
     initRunButton () {
