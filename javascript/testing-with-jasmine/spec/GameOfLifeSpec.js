@@ -285,83 +285,107 @@ describe("GameOfLife", function () {
 
 });
 
-describe("GameOfLife with boundaries", function () {
 
-    var game
+function createBoundariesTest(props) {
 
-    beforeEach(function () {
-        game = new GameOfLife({
-            minX: 2,
-            minY: 3,
-            maxX: 10,
-            maxY: 8
+    const minX = props.minX
+    const minY = props.minY
+    const maxX = props.maxX
+    const maxY = props.maxY
+
+    return function () {
+
+        let game
+
+        beforeEach(function () {
+            game = new GameOfLife({
+                minX: minX,
+                minY: minY,
+                maxX: maxX,
+                maxY: maxY
+            })
+        });
+
+        it("can set min and max coords", function () {
+            expect(game.minX).toEqual(minX)
+            expect(game.minY).toEqual(minY)
+            expect(game.maxX).toEqual(maxX)
+            expect(game.maxY).toEqual(maxY)
         })
-    });
 
-    it("can set min and max coords", function () {
-        expect(game.minX).toEqual(2)
-        expect(game.minY).toEqual(3)
-        expect(game.maxX).toEqual(10)
-        expect(game.maxY).toEqual(8)
+        it("can set coords inside the set range", function () {
+
+            game.setAlive([minX, minY])
+            expect(game.isAlive([minX, minY])).toBeTruthy()
+
+            game.setAlive([minX + 3, minY + 3])
+            expect(game.isAlive([minX + 3, minY + 3])).toBeTruthy()
+
+            game.setAlive([maxX, maxY])
+            expect(game.isAlive([maxX, maxY])).toBeTruthy()
+
+        })
+
+        it("cannot set coords outside of the range", function () {
+
+            game.setAlive([minX - 1, minY])
+            expect(game.isAlive([minX - 1, minY])).toBeFalsy()
+
+            /*game.setAlive([minX, minY - 1])
+            expect(game.isAlive([minX, minY - 1])).toBeFalsy()
+
+            game.setAlive([maxX + 1, maxY])
+            expect(game.isAlive([maxX + 1, maxY])).toBeFalsy()
+
+            game.setAlive([maxX, maxY + 1])
+            expect(game.isAlive([maxX, maxY + 1])).toBeFalsy()*/
+
+        })
+
+        it("won't make coords outside the range (x-underflow) alive", function () {
+
+            game.setAlive([minX, minY])
+            game.setAlive([minX, minY + 1])
+            game.setAlive([minX, minY + 2])
+
+            game.nextFrame()
+
+            expect(game.isAlive([minX - 1, minY + 1])).toBeFalsy()
+
+        })
+
+        it("won't make coords outside the range (y-underflow) alive", function () {
+
+            game.setAlive([minX, minY])
+            game.setAlive([minX + 1, minY])
+            game.setAlive([minX + 2, minY])
+
+            game.nextFrame()
+
+            expect(game.isAlive([minX + 1, minY - 1])).toBeFalsy()
+
+        })
+
+    }
+
+}
+
+describe(
+    "GameOfLife with boundaries",
+    createBoundariesTest({
+        minX: 2,
+        minY: 3,
+        maxX: 10,
+        maxY: 8
     })
+)
 
-    it("can set coords inside the set range", function () {
-
-        game.setAlive([2, 3])
-        expect(game.isAlive([2, 3])).toBeTruthy()
-
-        game.setAlive([3, 4])
-        expect(game.isAlive([3, 4])).toBeTruthy()
-
-        game.setAlive([5, 5])
-        expect(game.isAlive([5, 5])).toBeTruthy()
-
-        game.setAlive([10, 8])
-        expect(game.isAlive([10, 8])).toBeTruthy()
-
+/*describe(
+    "GameOfLife with boundaries where min boundaries are 0",
+    createBoundariesTest({
+        minX: 0,
+        minY: 0,
+        maxX: 10,
+        maxY: 8
     })
-
-    it("cannot set coords outside of the range", function () {
-
-        game.setAlive([1, 3])
-        expect(game.isAlive([1, 3])).toBeFalsy()
-
-        game.setAlive([2, 2])
-        expect(game.isAlive([2, 2])).toBeFalsy()
-
-        game.setAlive([11, 2])
-        expect(game.isAlive([11, 2])).toBeFalsy()
-
-        game.setAlive([3, 9])
-        expect(game.isAlive([3, 9])).toBeFalsy()
-
-        game.setAlive([0, 0])
-        expect(game.isAlive([0, 0])).toBeFalsy()
-
-    })
-
-    it("won't make coords outside the range (x-underflow) alive", function () {
-
-        game.setAlive([2, 3])
-        game.setAlive([2, 4])
-        game.setAlive([2, 5])
-
-        game.nextFrame()
-
-        expect(game.isAlive([1, 4])).toBeFalsy()
-
-    })
-
-    it("won't make coords outside the range (y-underflow) alive", function () {
-
-        game.setAlive([2, 3])
-        game.setAlive([3, 3])
-        game.setAlive([4, 3])
-
-        game.nextFrame()
-
-        expect(game.isAlive([3, 2])).toBeFalsy()
-
-    })
-
-})
+)*/

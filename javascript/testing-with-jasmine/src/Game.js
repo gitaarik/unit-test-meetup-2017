@@ -18,6 +18,7 @@ class Game {
         this.initMouseDown()
         this.initRunButton()
         this.initStepButton()
+        this.initClearButton()
 
     }
 
@@ -67,13 +68,11 @@ class Game {
     }
 
     cellHovered (event) {
-
         if (this.mouseIsDown) {
             const coords = this.getCellCoords(event.target)
             this.game.setAlive(coords)
             this.redraw()
         }
-
     }
 
     getCellCoords (element) {
@@ -128,6 +127,11 @@ class Game {
         button.addEventListener('click', () => this.step())
     }
 
+    initClearButton () {
+        const button = document.getElementById('clear')
+        button.addEventListener('click', () => this.clear())
+    }
+
     progressFrame () {
         this.game.nextFrame()
         this.redraw()
@@ -151,6 +155,11 @@ class Game {
 
         runLoop()
 
+    }
+
+    clear () {
+        this.game.clear()
+        this.redraw()
     }
 
 }

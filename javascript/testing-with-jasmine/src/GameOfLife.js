@@ -22,6 +22,10 @@ class GameOfLife {
         this.setCellState(coords, false)
     }
 
+    clear () {
+        this.grid = {}
+    }
+
     setCellState (coords, state) {
         if (this.isValidCoords(coords)) {
             this.grid[coords] = state
@@ -30,15 +34,33 @@ class GameOfLife {
 
     isValidCoords (coords) {
         if (
-            this.minX && coords[0] < this.minX
-            || this.minY && coords[1] < this.minY
-            || this.maxX && coords[0] > this.maxX
-            || this.maxY && coords[1] > this.maxY
+            this.isWithinBoundary(coords[0], this.minX, 'min')
+            && this.isWithinBoundary(coords[1], this.minY, 'min')
+            && this.isWithinBoundary(coords[0], this.maxX, 'max')
+            && this.isWithinBoundary(coords[1], this.maxY, 'max')
         ) {
-            return false
+            return true
         } else {
+            return false
+        }
+    }
+
+    isWithinBoundary (value, boundary, boundaryType) {
+
+        if (typeof boundary === 'undefined') {
             return true
         }
+
+        switch (boundaryType) {
+
+            case 'min':
+                return value >= boundary
+
+            case 'max':
+                return value <= boundary
+
+        }
+
     }
 
     isAlive (coords) {
