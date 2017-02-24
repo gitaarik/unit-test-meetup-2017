@@ -29,7 +29,7 @@ class Game {
             const row = document.createElement('tr')
             this.gridTable.appendChild(row)
 
-            for (let x = 0; x < this.cellAmountX; x++) {
+            for (let x = 0; x <= this.cellAmountX; x++) {
                 this.createCell(row, x, y)
             }
 
