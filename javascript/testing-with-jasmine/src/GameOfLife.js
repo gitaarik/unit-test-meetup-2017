@@ -15,20 +15,22 @@ class GameOfLife {
     }
 
     setAlive (coords) {
-        this.setCellState(coords, true)
+        if (this.isValidCoords(coords)) {
+            this.grid[coords] = true
+        }
     }
 
     setDead (coords) {
-        this.setCellState(coords, false)
+        delete this.grid[coords]
     }
 
     clear () {
         this.grid = {}
     }
 
-    setCellState (coords, state) {
-        if (this.isValidCoords(coords)) {
-            this.grid[coords] = state
+    *getAliveCells () {
+        for (let coordsStr of Object.keys(this.grid)) {
+            yield this.getCoordsFromStr(coordsStr)
         }
     }
 
@@ -72,7 +74,9 @@ class GameOfLife {
         const newGrid = {}
 
         for (let coords of this.getUniqueCoordsToRerender()) {
-            newGrid[coords] = this.getNextState(coords)
+            if (this.isAliveInNextState(coords)) {
+                newGrid[coords] = true
+            }
         }
 
         this.grid = newGrid
@@ -114,7 +118,7 @@ class GameOfLife {
         return str.split(',').map(coord => parseInt(coord))
     }
 
-    getNextState (coords) {
+    isAliveInNextState (coords) {
         if (this.isAlive(coords)) {
             return this.canLiveOn(coords)
         } else {

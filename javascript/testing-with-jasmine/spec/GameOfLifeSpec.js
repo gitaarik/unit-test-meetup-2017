@@ -17,6 +17,28 @@ describe("GameOfLife", function () {
         expect(game.isAlive([0, 0])).toBeFalsy()
     })
 
+    it("returns correct alive cells", function () {
+
+        game.setAlive([0, 0])
+        game.setDead([0, 0])
+        game.setAlive([1, 0])
+        game.setAlive([0, 1])
+        game.setAlive([1, 1])
+
+        const aliveCells = []
+
+        for (let aliveCell of game.getAliveCells()) {
+            aliveCells.push(aliveCell)
+        }
+
+        expect(aliveCells.sort()).toEqual([
+            [0, 1],
+            [1, 0],
+            [1, 1]
+        ])
+
+    })
+
     it("dies when it has no neighbours", function () {
         game.setAlive([0, 0])
         game.nextFrame()
@@ -331,14 +353,14 @@ function createBoundariesTest(props) {
             game.setAlive([minX - 1, minY])
             expect(game.isAlive([minX - 1, minY])).toBeFalsy()
 
-            /*game.setAlive([minX, minY - 1])
+            game.setAlive([minX, minY - 1])
             expect(game.isAlive([minX, minY - 1])).toBeFalsy()
 
             game.setAlive([maxX + 1, maxY])
             expect(game.isAlive([maxX + 1, maxY])).toBeFalsy()
 
             game.setAlive([maxX, maxY + 1])
-            expect(game.isAlive([maxX, maxY + 1])).toBeFalsy()*/
+            expect(game.isAlive([maxX, maxY + 1])).toBeFalsy()
 
         })
 

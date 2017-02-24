@@ -4,7 +4,7 @@ class Game {
 
         this.gridTable = document.getElementById('grid')
         this.cellAmountX = 70
-        this.cellAmountY = 32
+        this.cellAmountY = 31
         this.game = new GameOfLife({
             minX: 0,
             minY: 0,
@@ -24,7 +24,7 @@ class Game {
 
     createCells () {
 
-        for (let y = 0; y < this.cellAmountY; y++) {
+        for (let y = 0; y <= this.cellAmountY; y++) {
 
             const row = document.createElement('tr')
             this.gridTable.appendChild(row)
@@ -80,21 +80,13 @@ class Game {
     }
 
     redraw () {
-        for (let y = 0; y < this.cellAmountY; y++) {
-            for (let x = 0; x < this.cellAmountX; x++) {
-                this.setCellState([x, y])
-            }
-        }
-    }
 
-    setCellState (coords) {
+        this.gridTable.querySelectorAll('td').forEach(element => {
+            element.classList.remove('alive')
+        })
 
-        const cell = this.getCell(coords)
-
-        if (this.game.isAlive(coords)) {
-            cell.classList.add('alive')
-        } else {
-            cell.classList.remove('alive')
+        for (let aliveCell of this.game.getAliveCells()) {
+            this.getCell(aliveCell).classList.add('alive')
         }
 
     }
