@@ -3,8 +3,8 @@ class Game {
     constructor () {
 
         this.gridTable = document.getElementById('grid')
-        this.cellAmountX = 70
-        this.cellAmountY = 31
+        this.cellAmountX = 150
+        this.cellAmountY = 69
         this.game = new GameOfLife({
             minX: 0,
             minY: 0,
