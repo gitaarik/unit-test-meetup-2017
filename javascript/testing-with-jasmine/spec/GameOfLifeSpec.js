@@ -6,9 +6,16 @@ describe("GameOfLife", function () {
         game = new GameOfLife()
     });
 
+    it("can get state of a dead cell", function () {
+        expect(game.isAlive([0, 0])).toBeFalsy()
+    })
+
     it("can set a cell alive", function () {
         game.setAlive([0, 0])
         expect(game.isAlive([0, 0])).toBeTruthy()
+        expect(game.isAlive([0, 1])).toBeFalsy()
+        expect(game.isAlive([1, 0])).toBeFalsy()
+        expect(game.isAlive([1, 1])).toBeFalsy()
     })
 
     it("can set a cell dead", function () {
@@ -402,7 +409,7 @@ describe(
     })
 )
 
-/*describe(
+describe(
     "GameOfLife with boundaries where min boundaries are 0",
     createBoundariesTest({
         minX: 0,
@@ -410,4 +417,4 @@ describe(
         maxX: 10,
         maxY: 8
     })
-)*/
+)
